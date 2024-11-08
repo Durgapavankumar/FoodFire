@@ -1,4 +1,4 @@
-import React, { createElement, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import Header from "./components/Header";
 import Body from "./components/Body";
@@ -7,10 +7,10 @@ import Details from "./components/Details";
 import Error from "./components/Error";
 import RestaurantMenu from "./components/RestaurantMenu";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import RestaurantMenu from "./components/RestaurantMenu";
 import UserContext from "./utils/userContext";
 import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
+import Cart from "./components/Cart";
 
 const RestaurantCard = (props) => {
   const { resData } = props;
@@ -32,13 +32,14 @@ const RestaurantCard = (props) => {
 };
 
 const Applayout = () => {
-  const [userName, setUserName] = useState();
+  const [userName, setUserName] = useState(""); // Initialize with an empty string or a default value
   useEffect(() => {
     const data = {
       name: "Dpk",
     };
     setUserName(data.name);
   }, []);
+
   return (
     <Provider store={appStore}>
       <UserContext.Provider value={{ loggedInUser: userName }}>
@@ -72,6 +73,10 @@ const appRouter = createBrowserRouter([
         path: "/restaurant/:resId",
         element: <RestaurantMenu />,
       },
+      {
+        path: "/cart",
+        element: <Cart />,
+      },
     ],
     errorElement: <Error />,
   },
@@ -79,4 +84,3 @@ const appRouter = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<RouterProvider router={appRouter} />);
-//root.render(<Applayout />);

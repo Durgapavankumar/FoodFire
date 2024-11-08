@@ -3,12 +3,18 @@ import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
 import UserContext from "../utils/userContext";
+import { useSelector } from "react-redux";
+
 const Header = () => {
   const [btnName, setBtnName] = useState("Log IN");
 
   const onlineStatus = useOnlineStatus();
 
   const { loggedInUser } = useContext(UserContext);
+
+  // Subscribing to the store using selector
+  const cartItems = useSelector((store) => store.cart.items);
+  console.log(cartItems);
 
   return (
     <div className="flex justify-between items-center bg-pink-50 shadow-lg p-4">
@@ -34,8 +40,8 @@ const Header = () => {
             </Link>
           </li>
           <li className="p-2">
-            <Link to="/cart" className="hover:text-gray-700">
-              Cart
+            <Link to="/Cart" className="hover:text-gray-700">
+              Cart ({cartItems?.length}) {/* Use optional chaining here */}
             </Link>
           </li>
           <li>{loggedInUser}</li>

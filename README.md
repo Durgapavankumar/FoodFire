@@ -254,6 +254,7 @@ const json = await response.json();
 if (resinfo === null) return <Shimmer />;
 
 return (
+
 <div>
 <h1>Helooo</h1>
 
@@ -275,3 +276,8 @@ return (
 };
 
 export default RestaurantMenu;
+
+import { configureStore } from "@reduxjs/toolkit";
+
+const appStore = configureStore({});
+export default appStore;

@@ -23,33 +23,39 @@ const RestaurantMenu = () => {
 
   const fetchMenu = async () => {
     try {
+      console.log("Fetching menu for restaurant ID:", resId);
       const response = await fetch(Menu_API + resId);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const json = await response.json();
+      console.log("API response:", json);
 
-      // Set restaurant data
+      // Process and set restaurant data
       const restaurantData =
         json?.data?.cards
           ?.map((x) => x.card)
           ?.find((x) => x && x.card["@type"] === RESTAURANT_TYPE_KEY)?.card
           ?.info || null;
+      console.log("Restaurant Data:", restaurantData);
       setResInfo(restaurantData);
 
-      console.log(json?.data?.cards);
+      // Process and set categories
       const fetchedCategories =
         json?.data?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards?.filter(
           (x) =>
             x.card?.card?.["@type"] ===
             "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
         ) || [];
+      console.log("Fetched Categories:", fetchedCategories);
+      setCategories(fetchedCategories);
 
-      console.log(fetchedCategories);
-      setCategories(fetchedCategories); // Set the fetched categories to state
-
+      // Process and set menu items
       const menuItemsData =
         json?.data?.cards
           .find((x) => x.groupedCard)
           ?.groupedCard?.cardGroupMap?.REGULAR?.cards?.map((x) => x.card?.card)
-          ?.filter((x) => x["@type"] == MENU_ITEM_TYPE_KEY)
+          ?.filter((x) => x["@type"] === MENU_ITEM_TYPE_KEY)
           ?.map((x) => x.itemCards)
           .flat()
           .map((x) => x.card?.info) || [];
@@ -60,11 +66,12 @@ const RestaurantMenu = () => {
           uniqueMenuItems.push(item);
         }
       });
+      console.log("Unique Menu Items:", uniqueMenuItems);
       setMenuItems(uniqueMenuItems);
     } catch (error) {
+      console.error("Error fetching menu data:", error);
       setMenuItems([]);
       setResInfo(null);
-      console.log(error);
     }
   };
 
